@@ -1,0 +1,483 @@
+---
+include:
+  - docassemble.AssemblyLine:assembly_line.yml
+  - docassemble.ALMassachusetts:al_massachusetts.yml
+  - docassemble.MassAccess:massaccess.yml
+---
+metadata:
+  title: |
+    Draft Interview
+  short title: |
+    Draft Interview
+  tags:
+    - FA-00-00-00-00
+  authors:
+    - Nini Sprinkle
+---
+mandatory: True
+comment: |
+  Global interview metadata
+variable name: interview_metadata["Draft_Interview"]
+data:
+  al_weaver_version: "1.8.0"
+  generated on: "2022-12-13"
+  title: >-
+    Draft Interview
+  short title: >-
+    Draft Interview
+  description: |-
+    Generic motion family l
+  allowed courts: 
+    - "Probate and Family Court"
+  categories:
+    - "FA-00-00-00-00"
+  typical role: "plaintiff"
+  generate download screen: True
+---
+code: |
+  interview_metadata['main_interview_key'] =  'Draft_Interview'
+---
+code: |
+  # This controls the default country and list of states in address field questions
+  AL_DEFAULT_COUNTRY = "US"
+---
+code: |
+  # This controls the default state in address field questions
+  AL_DEFAULT_STATE = "MA"
+---
+code: |
+  github_repo_name =  'docassemble-DraftInterview'
+---
+code: |
+  interview_short_title = "Ask the court for a Generic motion family law4e8ec303c6cb2da97f64ce2c95c6bda7 1"
+---
+code: |
+  al_form_type = "starts_case" 
+---
+objects:
+  - users: ALPeopleList.using(there_are_any=True)
+  - motion: ALPeopleList.using(there_are_any=True)
+---
+sections:
+  - review_Draft_Interview: Review your answers
+---
+#################### Interview order #####################
+comment: |
+  Controls order and branching logic for questions specific to this form
+id: interview_order_Draft_Interview
+code: |
+  # Set the allowed courts for this interview
+  allowed_courts = interview_metadata["Draft_Interview"]["allowed courts"]
+  nav.set_section("review_Draft_Interview")
+  user_role = "plaintiff"
+  user_ask_role = "plaintiff"
+  emergency
+  trial_court.division
+  docket_number
+  set_progress(12)
+  plaintiffs.gather()
+  defendants.gather()
+  motion.gather()
+  set_progress(24)
+  users.gather()
+  set_parts(subtitle=str(users))
+  signature_date
+  users[0].address.address
+  set_progress(36)
+  set_progress(48)
+  users[0].phone_number
+  other_parties.gather()
+  other_parties[0].address.address
+  set_progress(60)
+  interview_order_Draft_Interview = True
+---
+###################### Main order ######################
+comment: |
+  This block includes the logic for standalone interviews.
+  Delete mandatory: True to include in another interview
+mandatory: True
+code: |
+  al_intro_screen
+  Draft_Interview_intro
+  interview_order_Draft_Interview
+  signature_date
+  # Store anonymous data for analytics / statistics
+  store_variables_snapshot(
+      persistent=True,
+      data={
+          "zip": showifdef("users[0].address.zip"),
+          "reached_interview_end": True,
+      },
+  )
+  Draft_Interview_download
+---
+comment: |
+  This question is used to introduce your interview. Please customize
+id: Draft_Interview
+continue button field: Draft_Interview_intro
+question: |
+  Draft Interview
+subquestion: |
+  Generic motion family
+---
+id: Screen one
+question: |
+  Screen one
+fields:
+  - "Emergency": emergency
+    maxlength: 17
+  - "User is petitioner": user_is_petitioner
+    datatype: yesno
+  - "User is defendant": user_is_defendant
+    datatype: yesno
+  - "User is plaintiff": user_is_plaintiff
+    datatype: yesno
+  - "User is respondent": user_is_respondent
+    datatype: yesno
+  - "User request": user_request
+    input type: area
+    maxlength: 1209
+  - "Hearing city": hearing_city
+    maxlength: 39
+  - "Hearing date month day year": hearing_date_month_day_year
+    maxlength: 39
+  - "Hearing time": hearing_time
+    maxlength: 39
+  - "Bbo number": bbo_number
+    maxlength: 30
+  - "Date of service": service_date
+    datatype: date
+  - "Service by hand time": service_by_hand_time
+    maxlength: 36
+  - "Service by hand": service_by_hand
+    datatype: yesno
+  - "Service by mailing": service_by_mailing
+    datatype: yesno
+---
+id: preview Draft_Interview
+question: |
+  Preview your form before you sign it
+subquestion: |
+  Here is a preview of the form you will sign on the next page.   
+  
+  ${ al_court_bundle.as_pdf(key='preview') }
+
+  Click the image to open it in a new tab. Click the "Edit answers" button
+  to edit your answers.
+
+  ${ action_button_html(url_action('review_Draft_Interview'), label='Edit answers', color='info') }
+  
+  Remember to come back to this window to continue and sign your form.
+continue button field: Draft_Interview_preview_question    
+---
+code: |
+  signature_fields = ['users[0].signature']
+---
+code: |
+  # This is a placeholder for the addresses that will be searched
+  # for matching address to court. Edit if court venue is based on 
+  # a different address than the user's
+  [user.address.address for user in users.complete_elements()]
+  addresses_to_search = [user.address for user in users.complete_elements()]
+---
+id: Draft Interview review screen
+event: review_Draft_Interview
+question: |
+  Review your answers
+review:
+  - Edit: trial_court
+    button: |
+      **Trial court**
+  
+      % if defined("trial_court.division"):
+      * division: ${ trial_court.division }
+      % endif
+  - Edit: docket_number
+    button: |
+      **Docket number**:
+      ${ docket_number }
+  - Edit: plaintiffs.revisit
+    button: |
+      **Plaintiffs**
+
+      % for item in plaintiffs:
+        * ${ item }
+      % endfor
+  - Edit: emergency
+    button: |
+      **Emergency**:
+      ${ emergency }
+  - Edit: defendants.revisit
+    button: |
+      **Defendants**
+
+      % for item in defendants:
+        * ${ item }
+      % endfor
+  - Edit: motion.revisit
+    button: |
+      **Motion**
+
+      % for item in motion:
+        * ${ item }
+      % endfor
+  - Edit: user_is_petitioner
+    button: |
+      **User is petitioner**:
+      ${ word(yesno(user_is_petitioner)) }
+  - Edit: users.revisit
+    button: |
+      **Users**
+
+      % for item in users:
+        * ${ item }
+      % endfor
+  - Edit: user_is_defendant
+    button: |
+      **User is defendant**:
+      ${ word(yesno(user_is_defendant)) }
+  - Edit: user_is_plaintiff
+    button: |
+      **User is plaintiff**:
+      ${ word(yesno(user_is_plaintiff)) }
+  - Edit: user_is_respondent
+    button: |
+      **User is respondent**:
+      ${ word(yesno(user_is_respondent)) }
+  - Edit: user_request
+    button: |
+      **User request**:
+      > ${ single_paragraph(user_request) }
+  - Edit: signature_date
+    button: |
+      **Date of signature**:
+      ${ signature_date }
+  - Edit: hearing_city
+    button: |
+      **Hearing city**:
+      ${ hearing_city }
+  - Edit: hearing_date_month_day_year
+    button: |
+      **Hearing date month day year**:
+      ${ hearing_date_month_day_year }
+  - Edit: hearing_time
+    button: |
+      **Hearing time**:
+      ${ hearing_time }
+  - Edit: bbo_number
+    button: |
+      **Bbo number**:
+      ${ bbo_number }
+  - Edit: other_parties.revisit
+    button: |
+      **Other parties**
+
+      % for item in other_parties:
+        * ${ item }
+      % endfor
+  - Edit: service_date
+    button: |
+      **Date of service**:
+      ${ service_date }
+  - Edit: service_by_hand_time
+    button: |
+      **Service by hand time**:
+      ${ service_by_hand_time }
+  - Edit: service_by_hand
+    button: |
+      **Service by hand**:
+      ${ word(yesno(service_by_hand)) }
+  - Edit: service_by_mailing
+    button: |
+      **Service by mailing**:
+      ${ word(yesno(service_by_mailing)) }
+---
+continue button field: plaintiffs.revisit
+question: |
+  Edit plaintiffs
+subquestion: |
+  ${ plaintiffs.table }
+
+  ${ plaintiffs.add_action() }
+---
+table: plaintiffs.table
+rows: plaintiffs
+columns:
+  - Name: |
+      row_item.name.full() if defined("row_item.name.first") else ""
+edit:
+  - name.first
+confirm: True
+
+---
+continue button field: defendants.revisit
+question: |
+  Edit defendants
+subquestion: |
+  ${ defendants.table }
+
+  ${ defendants.add_action() }
+---
+table: defendants.table
+rows: defendants
+columns:
+  - Name: |
+      row_item.name.full() if defined("row_item.name.first") else ""
+edit:
+  - name.first
+confirm: True
+
+---
+continue button field: motion.revisit
+question: |
+  Edit motion
+subquestion: |
+  ${ motion.table }
+
+  ${ motion.add_action() }
+---
+table: motion.table
+rows: motion
+columns:
+  - Name: |
+      row_item.name.full() if defined("row_item.name.first") else ""
+edit:
+  - name.first
+confirm: True
+
+---
+continue button field: users.revisit
+question: |
+  Edit users
+subquestion: |
+  ${ users.table }
+
+  ${ users.add_action() }
+---
+table: users.table
+rows: users
+columns:
+  - Name: |
+      row_item.name.full() if defined("row_item.name.first") else ""
+  - Signature: |
+      row_item.signature if defined("row_item.signature") else ""
+  - Address: |
+      row_item.address.block() if defined("row_item.address.zip") else ""
+  - Phone number: |
+      row_item.phone_number if defined("row_item.phone_number") else ""
+edit:
+  - name.first
+  - signature
+  - address.zip
+  - phone_number
+confirm: True
+
+---
+continue button field: other_parties.revisit
+question: |
+  Edit other_parties
+subquestion: |
+  ${ other_parties.table }
+
+  ${ other_parties.add_action() }
+---
+table: other_parties.table
+rows: other_parties
+columns:
+  - Name: |
+      row_item.name.full() if defined("row_item.name.first") else ""
+  - Address: |
+      row_item.address.block() if defined("row_item.address.zip") else ""
+edit:
+  - name.first
+  - address.zip
+confirm: True
+
+---
+id: download Draft_Interview
+event: Draft_Interview_download
+question: |
+  All done
+subquestion: |
+  Thank you ${users}. Your form is ready to download and deliver.
+  
+  View, download and send your form below. Click the "Edit answers" button to fix any mistakes.
+
+  ${ action_button_html(url_action('review_Draft_Interview'), label='Edit answers', color='info') }
+  
+  
+  ${ al_user_bundle.download_list_html() }
+  
+
+  ${ al_user_bundle.send_button_html(show_editable_checkbox=False) }
+
+progress: 100
+---
+# ALDocument objects specify the metadata for each template
+objects:
+  - Draft_Interview_Post_interview_instructions: ALDocument.using(title="Instructions", filename="Draft_Interview_next_steps.docx", enabled=True, has_addendum=False)
+  - Draft_Interview_attachment: ALDocument.using(title="Draft Interview", filename="Draft_Interview", enabled=True, has_addendum=False, )
+---
+# Bundles group the ALDocuments into separate downloads, such as for court and for the user
+objects:
+  - al_user_bundle: ALDocumentBundle.using(elements=[Draft_Interview_Post_interview_instructions, Draft_Interview_attachment], filename="Draft_Interview", title="All forms to download for your records", enabled=True)
+  - al_court_bundle: ALDocumentBundle.using(elements=[Draft_Interview_attachment],  filename="Draft_Interview", title="All forms to deliver to court", enabled=True)
+---
+# Each attachment defines a key in an ALDocument. We use `i` as the placeholder here so the same template is 
+# used for "preview" and "final" keys, and logic in the template checks the value of 
+# `i` to show or hide the user's signature
+attachment:
+  name: Post-interview-Instructions
+  filename: Draft_Interview_next_steps
+  docx template file: Draft_Interview_next_steps.docx
+  variable name: Draft_Interview_Post_interview_instructions[i]
+  skip undefined: True
+---
+attachment:
+  name: Draft Interview
+  filename: Draft_Interview
+  variable name: Draft_Interview_attachment[i]
+  skip undefined: True
+  pdf template file: Draft_Interview.pdf
+  fields:
+      - "trial_court_division": ${ trial_court.division }
+      - "trial_court_division__2": ${ trial_court.division }
+      - "docket_number": ${ docket_number }
+      - "docket_number__2": ${ docket_number }
+      - "plaintiff": ${ plaintiffs[0] }
+      - "emergency": ${ emergency }
+      - "defendant": ${ defendants[0] }
+      - "motion_name": ${ motion[0] }
+      - "motion_name__2": ${ motion[0] }
+      - "user_is_petitioner": ${ user_is_petitioner }
+      - "user_name": ${ users[0] }
+      - "user_name__2": ${ users[0] }
+      - "user_is_defendant": ${ user_is_defendant }
+      - "user_is_plaintiff": ${ user_is_plaintiff }
+      - "user_is_respondent": ${ user_is_respondent }
+      - "user_request": ${ user_request }
+      - "signature_date__1": ${ signature_date }
+      - "signature_date__2": ${ signature_date }
+      - "user_signature": ${ users[0].signature_if_final(i) }
+      - "user_signature__2": ${ users[0].signature_if_final(i) }
+      - "user_address_line_one": ${ users[0].address.line_one() }
+      - "hearing_city": ${ hearing_city }
+      - "user_address_city": ${ users[0].address.city }
+      - "user_address_state": ${ users[0].address.state }
+      - "user_address_zip": ${ users[0].address.zip }
+      - "hearing_date_month_day_year": ${ hearing_date_month_day_year }
+      - "user_phone": ${ users[0].phone_number }
+      - "hearing_time": ${ hearing_time }
+      - "bbo_number": ${ bbo_number }
+      - "other_party_name": ${ other_parties[0] }
+      - "other_party_address_line_one": ${ other_parties[0].address.line_one() }
+      - "other_party_address_city": ${ other_parties[0].address.city }
+      - "other_party_address_state": ${ other_parties[0].address.state }
+      - "other_party_address_zip": ${ other_parties[0].address.zip }
+      - "service_date": ${ service_date.format() }
+      - "service_date": ${ service_date.format() }
+      - "service_by_hand_time": ${ service_by_hand_time }
+      - "service_by_hand": ${ service_by_hand }
+      - "service_by_mailing": ${ service_by_mailing }
+
+
