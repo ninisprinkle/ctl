@@ -1,0 +1,72 @@
+Title: Indigency "Flowchart"
+Author: Nini Sprinkle
+Before: <link rel="stylesheet" type="text/css" href="https://suffolklitlab.org/howto/qna/style/style.css">
+<div id="icon" style="background-size: 110px 99px;background-image: url('https://suffolklitlab.org/howto/qna/images/maxheadroom.gif');"></div>
+<h2 style="text-align:center;">Indigency "Flowchart"</h2>
+<p><b>This is a <a href="https://www.codingthelaw.org/level/2/#mission_p1">class project</a>. You should not rely on it as a source of legal information!</b></p>
+<p>Answer the following questions to see if you qualify for appointed counsel in [insert state name].</p>
+
+Q(1):Is there more than one person in the household?
+A:No.
+	Q(1.1):Is the household income more than $15,084.90?
+	A:Yes.
+		Q(Ineligible):Ineligible for assigned counsel.
+	A:No.
+		Q(Eligible):Eligible for assigned counsel.
+A:Yes.
+	Q(1.2):Are there more than two people in the household?
+	A:No.
+		Q(1.2.1):Does the yearly household income exceed $20,324.10?
+		A:Yes.
+			Q(1.2.1.1):GOTO:Ineligible
+		A:No.
+			Q(1.2.1.2):GOTO:Eligible
+	A:Yes.
+		Q(1.2.2):Are there more than three people in the household?
+		A:No.
+			Q(1.2.2.1):Does the yearly household income exceed $25,563.30?
+			A:Yes.
+				Q(1.2.2.1.1):GOTO:Ineligible
+			A:No.
+				Q(1.2.2.1.2):GOTO:Eligible
+		A:Yes.
+			Q(1.2.2.2):Are there more than four people in the household?
+			A:No.
+				Q(1.2.2.2.1):Does the yearly household income exceed $30,802.50?
+				A:Yes.
+					Q(1.2.2.2.1.1):GOTO:Ineligible
+				A:No.
+					Q(1.2.2.2.1.2):GOTO:Eligible
+			A:Yes.
+				Q(1.2.2.2.2):Are there more than five people in the household?
+				A:No.
+					Q(1.2.2.2.2.1):Does the yearly household income exceed $36,041.70?
+					A:Yes.
+						Q(1.2.2.2.2.1.1):GOTO:Ineligible
+					A:No.
+						Q(1.2.2.2.2.1.2):GOTO:Eligible
+				A:Yes.
+					Q(1.2.2.2.2.2):Are there more than six people in the household?
+					A:No.
+						Q(1.2.2.2.2.2.1):Does the yearly household income exceed $41,280.90?
+						A:Yes.
+							Q(1.2.2.2.2.2.1.1):GOTO:Ineligible
+						A:No.
+							Q(1.2.2.2.2.2.1.2):GOTO:Eligible
+					A:Yes.
+						Q(1.2.2.2.2.2.2):Are there more than seven people in the household?
+						A:No.
+							Q(1.2.2.2.2.2.2.1):Does the yearly household income exceed $46,520.10?
+							A:Yes.
+								Q(1.2.2.2.2.2.2.1.1):GOTO:Ineligible
+							A:No.
+								Q(1.2.2.2.2.2.2.1.2):GOTO:Eligible
+						A:Yes.
+							Q(1.2.2.2.2.2.2.2):Are there eight people in the household?
+							A:Yes.
+								Q(1.2.2.2.2.2.2.2.1):Does the yearly household income exceed $51,759.30?
+								A:Yes.
+									Q(1.2.2.2.2.2.2.2.1.1):GOTO:Ineligible
+								A:No.
+									Q(1.2.2.2.2.2.2.2.1.2):GOTO:Eligible.
+										
